@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .error {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <img class="logo" />
+    <h1 class="name"></h1>
+    <p class="description"></p>
+
+    <h2 class="error"></h2>
+
+    <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase-firestore.js"></script>
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyDxS045w85hi1KH3FzVI7w9UkDddlDhmUo",
+        authDomain: "qubits-school.firebaseapp.com",
+        databaseURL: "https://qubits-school.firebaseio.com",
+        projectId: "qubits-school",
+        storageBucket: "qubits-school.appspot.com",
+        messagingSenderId: "668927214557",
+        appId: "1:668927214557:web:061f32b5bfde587de4ac34",
+        measurementId: "G-ZW0HM6JGDJ",
+      };
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const subdomain = urlParams.get("subdomain");
+
+      // Initialize Firebase
+      const app = firebase.initializeApp(firebaseConfig);
+      const firestore = app.firestore();
+
+      firestore
+        .collection("sites")
+        .where("subdomain", "==", subdomain)
+        .get()
+        .then((res) => {
+          if (!res.docs[0]) {
+            const errorNode = document.querySelector(".error");
+            errorNode.textContent =
+              "No Site Found, Redirecting in 5 seconds....";
+          } else {
+            const record = res.docs[0].data();
+            const logoNode = document.querySelector(".logo");
+            const nameNode = document.querySelector(".name");
+            const descriptionNode = document.querySelector(".description");
+
+            logoNode.setAttribute("src", record.logo);
+            nameNode.textContent = record.name;
+            descriptionNode.textContent = record.description;
+
+            console.log(record);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    </script>
+
+    <script></script>
+  </body>
+</html>
